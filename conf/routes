@@ -3,7 +3,10 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index
-
+GET           /player-server/genre/:id        controllers.GenreController.getById(id: Int)
+GET           /player-server/genre            controllers.GenreController.getAll(from: Int ?= 0, limit: Int ?= 20)
+POST          /player-server/genre            controllers.GenreController.add
+PUT           /player-server/genre/:id        controllers.GenreController.update(id: Int)
+DELETE        /player-server/genre/:id        controllers.GenreController.delete(id: Int)
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET           /assets/*file                   controllers.Assets.versioned(path="/public", file: Asset)

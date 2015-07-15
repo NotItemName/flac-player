@@ -12,7 +12,7 @@ libraryDependencies ++= Seq(
   specs2 % Test,
   "com.typesafe.play" %% "play-slick" % "1.0.0",
   "com.typesafe.play" %% "play-slick-evolutions" % "1.0.0",
-  "mysql" % "mysql-connector-java" % "5.1.36"
+  "mysql" % "mysql-connector-java" % "5.1.36" % Runtime
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
