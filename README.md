@@ -3,7 +3,7 @@
 
 ###Get all albums 
 	Method: GET
-	Endpoint: /player-server/album/get
+	Endpoint: /player-server/album
 	Response: 200 OK
 	Response body:
 	{
@@ -28,7 +28,7 @@
 	
 ###Get album by id
 	Method: GET
-	Endpoint: /player-server/album/get/1
+	Endpoint: /player-server/album/1
 	Response: 200 OK
 	Response body:
 	{
@@ -41,7 +41,7 @@
 	
 ###Add album
 	Method: POST
-	Endpoint: /player-server/album/add
+	Endpoint: /player-server/album
 	Request body:
 	{
 		"name":"Nevermind1",
@@ -61,7 +61,7 @@
 	
 ###Update album
 	Method: PUT
-	Endpoint: /player-server/album/update/1
+	Endpoint: /player-server/album/1
 	Request body:
 	{
 		"name":"Nevermind",
@@ -73,14 +73,14 @@
 	
 	Delete album
 	Method: DELETE
-	Endpoint: /player-server/album/delete/9
+	Endpoint: /player-server/album/9
 	Response: 204 No Content
 	
 ##Artist
 
 ###Get all artists
 	Method: GET
-	Endpoint: /player-server/artist/get
+	Endpoint: /player-server/artist
 	Response: 200 OK
 	Response body:
 	{
@@ -103,7 +103,7 @@
 	
 ###Get artist by id
 	Method: GET
-	Endpoint: /player-server/artist/get/1
+	Endpoint: /player-server/artist/1
 	Response: 200 OK
 	Response body:
 	{
@@ -113,7 +113,7 @@
 	
 ###Add artist
 	Method: POST
-	Endpoint: /player-server/artist/add
+	Endpoint: /player-server/artist
 	Request body:
 	{
 		"name":"Greenskeeper"
@@ -127,23 +127,23 @@
 	
 ###Update artist
 	Method: PUT
-	Endpoint: /player-server/artist/update/7
+	Endpoint: /player-server/artist/7
 	Request body:
 	{
 		"name":"Greenskeepers",
 	}
 	Response: 204 No Content
 	
-	Delete artist
+###Delete artist
 	Method: DELETE
-	Endpoint: /player-server/artist/delete/7
+	Endpoint: /player-server/artist/7
 	Response: 204 No Content
 	
 ##Genre
 
 ###Get all genres
 	Method: GET
-	Endpoint: /player-server/genre/get
+	Endpoint: /player-server/genre
 	Response: 200 OK
 	Response body:
 	{
@@ -166,7 +166,7 @@
 	
 ###Get genre by id
 	Method: GET
-	Endpoint: /player-server/genre/get/1
+	Endpoint: /player-server/genre/1
 	Response: 200 OK
 	Response body:
 	{
@@ -176,7 +176,7 @@
 	
 ###Add genre
 	Method: POST
-	Endpoint: /player-server/genre/add
+	Endpoint: /player-server/genre
 	Request body:
 	{
 		"name":"Blues Rock"
@@ -190,7 +190,7 @@
 	
 ###Update genre
 	Method: PUT
-	Endpoint: /player-server/artist/update/17
+	Endpoint: /player-server/artist/17
 	Request body:
 	{
 		"name":"Blues Rock1",
@@ -199,14 +199,14 @@
 	
 ###Delete genre
 	Method: DELETE
-	Endpoint: /player-server/genre/delete/17
+	Endpoint: /player-server/genre/17
 	Response: 204 No Content
 	
 ##Song
     
 ###Get all songs
     Method: GET
-    Endpoint: /player-server/song/get
+    Endpoint: /player-server/song
     Response: 200 OK
     Response body:
     {
@@ -235,7 +235,7 @@
     	
 ###Get song by id
     Method: GET
-    Endpoint: /player-server/song/get/1
+    Endpoint: /player-server/song/1
     Response: 200 OK
     Response body:
     {
@@ -250,7 +250,7 @@
     	
 ###Add song
     Method: POST
-    Endpoint: /player-server/song/add
+    Endpoint: /player-server/song
     Request body: 
     song file
     Response: 201 Created
