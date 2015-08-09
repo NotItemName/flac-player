@@ -19,7 +19,7 @@ class AlbumRepository {
     }
   }
 
-  def existAlbumWithArtist(albumName: String, artistName: String): DBIO[Boolean] = {
+  def existsAlbumWithArtist(albumName: String, artistName: String): DBIO[Boolean] = {
     (for {
       album <- albumTable if album.name === albumName
       artist <- album.artist if artist.name === artistName

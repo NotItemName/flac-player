@@ -16,7 +16,7 @@ class AlbumService @Inject()(private val albumRepository: AlbumRepository,
                              private val genreRepository: GenreRepository) {
 
   def save(albumVal: AlbumWithArtistAndGenres): Future[AlbumWithArtistAndGenres] = {
-    val query = albumRepository.existAlbumWithArtist(albumVal.name, albumVal.artist).flatMap {
+    val query = albumRepository.existsAlbumWithArtist(albumVal.name, albumVal.artist).flatMap {
       case true => DBIO.failed(new Exception("Album with such name and artist name already exists"))
       case false => artistRepository.findByName(albumVal.artist).flatMap {
         case None => DBIO.failed(new Exception(s"Artist with name: '${albumVal.artist}' doesn't exist"))
