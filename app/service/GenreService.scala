@@ -6,17 +6,13 @@ import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import repository.GenreRepository
 import slick.driver.JdbcProfile
+import table.Tables
 
 import scala.concurrent.Future
 
-
-class GenreService @Inject()(private val provider: DatabaseConfigProvider,
-                             private val genreRepository: GenreRepository) {
-
-  protected val dbConfig = provider.get[JdbcProfile]
-
-  import dbConfig._
-  import dbConfig.driver.api._
+import Tables.dbConfig._
+import Tables.dbConfig.driver.api._
+class GenreService @Inject()(private val genreRepository: GenreRepository) {
 
   def update(id: Int, genre: Genre): Future[Int] = db.run {
     genreRepository.update(id, genre)
@@ -29,7 +25,7 @@ class GenreService @Inject()(private val provider: DatabaseConfigProvider,
   def save(genre: Genre): Future[Genre] = db.run {
     genreRepository.findByName(genre.name).flatMap {
       case None => genreRepository.save(genre)
-      case Some(foundGenre) => DBIO.successful(foundGenre)
+      case Some(foundGenre) => DBIO.failed(new Exception("Genre already exists"))
     }.transactionally
   }
 

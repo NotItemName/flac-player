@@ -1,0 +1,21 @@
+# Album_Genre schemas
+
+# --- !Ups
+CREATE TABLE `ALBUM_GENRE` (
+  `albumId` INT NOT NULL,
+  `genreId` INT NOT NULL,
+  FOREIGN KEY (genreId)
+  REFERENCES `GENRE` (id)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT,
+  FOREIGN KEY (albumId)
+  REFERENCES `ALBUM` (id)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+
+# --- !Downs
+DROP TABLE IF EXISTS `ALBUM_GENRE`;

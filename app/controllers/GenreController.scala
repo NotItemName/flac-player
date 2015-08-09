@@ -9,6 +9,7 @@ import play.api.mvc._
 import service.GenreService
 
 import scala.concurrent.Future
+import scala.util.control.NonFatal
 
 class GenreController @Inject()(val genreService: GenreService) extends Controller {
 
@@ -31,8 +32,10 @@ class GenreController @Inject()(val genreService: GenreService) extends Controll
 
   def add() = Action.async(parse.json) { implicit request =>
     request.body.validate[Genre].map { genre =>
-      genreService.save(genre).map { savedGenre=>
+      genreService.save(genre).map { savedGenre =>
         Ok(Json.toJson(savedGenre))
+      }.recover {
+        case NonFatal(_) => NotFound("Genre already exists")
       }
     }.getOrElse(Future.successful(BadRequest("Invalid json")))
   }

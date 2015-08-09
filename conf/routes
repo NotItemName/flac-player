@@ -16,5 +16,9 @@ POST          /player-server/artist            controllers.ArtistController.add
 PUT           /player-server/artist/:id        controllers.ArtistController.update(id:Int)
 DELETE        /player-server/artist/:id        controllers.ArtistController.delete(id:Int)
 
+#Albums
+GET           /player-server/album/:id         controllers.AlbumController.getById(id:Int)
+GET           /player-server/album             controllers.AlbumController.getAll(from: Int ?= 0, limit: Int ?= 20)
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                    controllers.Assets.versioned(path="/public", file: Asset)

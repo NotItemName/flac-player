@@ -1,4 +1,4 @@
-# Genre schema
+# Artist schema
 
 # --- !Ups
 
