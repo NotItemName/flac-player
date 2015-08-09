@@ -5,7 +5,7 @@ import table.Tables._
 import table.Tables.dbConfig.driver.api._
 
 class AlbumRepository {
-  def findById(id: Int): DBIO[Option[(Album, String)]] = {
+  def findByIdAlbumWithArtist(id: Int): DBIO[Option[(Album, String)]] = {
     (for {
       album <- albumTable
       artist <- album.artist if album.id === id
@@ -13,7 +13,7 @@ class AlbumRepository {
   }
 
 
-  def findAll(from: Int, limit: Int): DBIO[Seq[(Album, String)]] = {
+  def findAllAlbumsWithArtist(from: Int, limit: Int): DBIO[Seq[(Album, String)]] = {
     (for {
       album <- albumTable
       artist <- album.artist

@@ -14,45 +14,31 @@ class AlbumService @Inject()(private val albumRepository: AlbumRepository,
                              private val genreRepository: GenreRepository) {
 
   def findAll(from: Int, limit: Int): Future[Seq[AlbumWithArtistAndGenres]] = {
-    for {
-      tuple <- findAllAlbumsWithArtistAndGenres(from, limit)
-    } yield for {
-      ((album, artistName), genres) <- tuple
-    } yield AlbumWithArtistAndGenres(album.id, album.name, album.year, artistName, genres)
-  }
-
-  private def findAllAlbumsWithArtistAndGenres(from: Int, limit: Int): Future[Seq[((Album, String), Seq[String])]] = {
-    db.run {
-      for {
-        albumsWithArtist <- albumRepository.findAll(from, limit)
-        result <- DBIO.sequence(
-          albumsWithArtist.map { albumTuple =>
-            genreRepository.findByAlbumId(albumTuple._1.id.get).map { genres =>
-              (albumTuple, genres.map(_.name))
-            }
-          }
+    val query =
+      albumRepository.findAllAlbumsWithArtist(from, limit).flatMap { albumsWithArtist =>
+        DBIO.sequence(
+          albumsWithArtist.map { case (album, artist) => findGenresForAlbum(album, artist) }
         )
-      } yield result
-    }
+      }
+
+    db.run(query)
   }
 
   def findById(id: Int): Future[Option[AlbumWithArtistAndGenres]] = {
-    for {
-      tuple <- findByIdAlbumsWithArtistAndGenres(id)
-    } yield for {
-      ((album, artistName), genres) <- tuple
-    } yield AlbumWithArtistAndGenres(album.id, album.name, album.year, artistName, genres)
-  }
-
-  private def findByIdAlbumsWithArtistAndGenres(id: Int): Future[Option[((Album, String), Seq[String])]] = {
-    val query: DBIO[Option[((Album, String), Seq[String])]] =
-      albumRepository.findById(id).flatMap {
-        case Some((album, artist)) => genreRepository.findByAlbumId(album.id.get).map { x =>
-          Some(((album, artist), x.map(_.name)))
-        }
+    val query =
+      albumRepository.findByIdAlbumWithArtist(id).flatMap {
+        case Some((album, artist)) => findGenresForAlbum(album, artist).map(Some(_))
         case None => DBIO.successful(None)
       }
+
     db.run(query)
+  }
+
+
+  private def findGenresForAlbum(album: Album, artist: String): DBIO[AlbumWithArtistAndGenres] = {
+    genreRepository.findByAlbumId(album.id.get).map { genres =>
+      AlbumWithArtistAndGenres(album.id, album.name, album.year, artist, genres.map(_.name))
+    }
   }
 
 }
