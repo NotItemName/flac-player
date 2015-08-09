@@ -10,7 +10,7 @@ class AlbumGenreTable(tag: Tag) extends Table[(Int, Int)](tag,"ALBUM_GENRE"){
   def albumId= column[Int]("albumId")
   def genreId= column[Int]("genreId")
 
-  def album = foreignKey("ALBUM_FK", albumId, albumTable)(_.id)
-  def genre = foreignKey("GENRE_FK", genreId, genreTable)(_.id)
+  def album = foreignKey("ALBUM_FK", albumId, albumTable)(_.id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
+  def genre = foreignKey("GENRE_FK", genreId, genreTable)(_.id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
 
 }

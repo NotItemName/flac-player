@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import model._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import repository.{AlbumRepository, ArtistRepository, GenreRepository}
+import repository.{AlbumGenreRepository, AlbumRepository, ArtistRepository, GenreRepository}
 import slick.dbio.DBIO
 import table.Tables.dbConfig._
 import table.Tables.dbConfig.driver.api._
@@ -13,6 +13,7 @@ import scala.concurrent.Future
 
 class AlbumService @Inject()(private val albumRepository: AlbumRepository,
                              private val artistRepository: ArtistRepository,
+                             private val albumGenreRepository: AlbumGenreRepository,
                              private val genreRepository: GenreRepository) {
 
   def save(albumVal: AlbumWithArtistAndGenres): Future[AlbumWithArtistAndGenres] = {
@@ -21,8 +22,10 @@ class AlbumService @Inject()(private val albumRepository: AlbumRepository,
       case false => artistRepository.findByName(albumVal.artist).flatMap {
         case None => DBIO.failed(new Exception(s"Artist with name: '${albumVal.artist}' doesn't exist"))
         case Some(artist) => genreRepository.saveNotExistedGenres(albumVal.genres).flatMap { genres =>
-          albumRepository.save(Album(albumVal.name, albumVal.year, artist.id.get), genres).map { album =>
-            AlbumWithArtistAndGenres(album.id, album.name, album.year, artist.name, genres.map(_.name))
+          albumRepository.save(Album(albumVal.name, albumVal.year, artist.id.get), genres).flatMap { album =>
+            albumGenreRepository.save(album, genres).map { count =>
+              AlbumWithArtistAndGenres(album.id, album.name, album.year, artist.name, genres.map(_.name))
+            }
           }
         }
       }
@@ -41,12 +44,6 @@ class AlbumService @Inject()(private val albumRepository: AlbumRepository,
     )
   }
 
-  def findById(id: Int): Future[Option[AlbumWithArtistAndGenres]] = {
-    findGenresFor(
-      albumRepository.findByIdAlbumWithArtist(id).map(_.toSeq)
-    ) map (_.headOption)
-  }
-
   private def findGenresFor(albumQuery: DBIO[Seq[(Album, String)]]): Future[Seq[AlbumWithArtistAndGenres]] = {
     val query =
       albumQuery.flatMap { albumsWithArtist =>
@@ -62,5 +59,11 @@ class AlbumService @Inject()(private val albumRepository: AlbumRepository,
     genreRepository.findByAlbumId(album.id.get).map { genres =>
       AlbumWithArtistAndGenres(album.id, album.name, album.year, artist, genres.map(_.name))
     }
+  }
+
+  def findById(id: Int): Future[Option[AlbumWithArtistAndGenres]] = {
+    findGenresFor(
+      albumRepository.findByIdAlbumWithArtist(id).map(_.toSeq)
+    ) map (_.headOption)
   }
 }
