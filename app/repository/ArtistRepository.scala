@@ -4,9 +4,7 @@ import model.Artist
 import table.Tables.dbConfig.driver.api._
 import table.Tables.artistTable
 
-/**
- * @author Mykola Zalyayev
- */
+
 class ArtistRepository {
 
   def delete(id: Int): DBIO[Int] = artistTable.filter(_.id === id).delete
