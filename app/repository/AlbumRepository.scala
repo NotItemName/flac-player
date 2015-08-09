@@ -1,23 +1,23 @@
 package repository
 
-import model.Album
+import model.{Artist, Album}
 import table.Tables._
 import table.Tables.dbConfig.driver.api._
 
 class AlbumRepository {
-  def findByIdAlbumWithArtist(id: Int): DBIO[Option[(Album, String)]] = {
+  def findByIdAlbumWithArtist(id: Int): DBIO[Option[(Album, Artist)]] = {
     (for {
       album <- albumTable
       artist <- album.artist if album.id === id
-    } yield (album, artist.name)).result.headOption
+    } yield (album, artist)).result.headOption
   }
 
 
-  def findAllAlbumsWithArtist(from: Int, limit: Int): DBIO[Seq[(Album, String)]] = {
+  def findAllAlbumsWithArtist(from: Int, limit: Int): DBIO[Seq[(Album, Artist)]] = {
     (for {
       album <- albumTable
       artist <- album.artist
-    } yield (album, artist.name)).result
+    } yield (album, artist)).result
   }
 
 }
