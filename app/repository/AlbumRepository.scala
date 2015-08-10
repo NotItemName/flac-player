@@ -1,10 +1,11 @@
 package repository
 
 import model.{Album, Genre}
+import table.AlbumTable
 import table.Tables._
 import table.Tables.dbConfig.driver.api._
 
-class AlbumRepository {
+class AlbumRepository extends GenericRepository[Album, AlbumTable](albumTable) {
 
   def save(album: Album, genres: Seq[Genre]): DBIO[Album] = {
     (albumTable returning albumTable.map(_.id)
@@ -19,7 +20,6 @@ class AlbumRepository {
     } yield album).exists.result
   }
 
-  def delete(id: Int): DBIO[Int] = albumTable.filter(_.id === id).delete
 
   def findByIdAlbumWithArtist(id: Int): DBIO[Option[(Album, String)]] = {
     (for {

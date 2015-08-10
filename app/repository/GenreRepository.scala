@@ -1,11 +1,12 @@
 package repository
 
 import model.Genre
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import table.GenreTable
 import table.Tables._
 import table.Tables.dbConfig.driver.api._
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-class GenreRepository {
+class GenreRepository extends GenericRepository[Genre, GenreTable](genreTable) {
 
   def saveNotExistedGenres(genres: Seq[String]): DBIO[Seq[Genre]] = {
     DBIO.sequence(genres.map { genreName =>
@@ -24,8 +25,6 @@ class GenreRepository {
       ) += genre
   }
 
-  def findAll(from: Int, limit: Int): DBIO[Seq[Genre]] = genreTable.drop(from).take(limit).result
-
   def findByAlbumId(id: Int): DBIO[Seq[Genre]] = {
     val query = for {
       genre <- genreTable
@@ -33,11 +32,5 @@ class GenreRepository {
     } yield genre
     query.result
   }
-
-  def delete(id: Int): DBIO[Int] = genreTable.filter(_.id === id).delete
-
-  def update(id: Int, genre: Genre): DBIO[Int] = genreTable.filter(_.id === id).map(_.name).update(genre.name)
-
-  def findById(id: Int): DBIO[Option[Genre]] = genreTable.filter(_.id === id).result.headOption.transactionally
 
 }

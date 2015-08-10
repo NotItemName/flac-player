@@ -2,10 +2,8 @@ package service
 
 import com.google.inject.Inject
 import model.Genre
-import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import repository.GenreRepository
-import slick.driver.JdbcProfile
 import table.Tables
 
 import scala.concurrent.Future

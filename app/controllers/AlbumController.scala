@@ -1,11 +1,12 @@
 package controllers
 
 import javax.inject.Inject
-import model.{AlbumWithArtistAndGenres, Album, Genre}
+import model.{Album, Genre}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
 import play.api.mvc._
 import service.AlbumService
+import view.AlbumWithArtistAndGenres
 
 import scala.concurrent.Future
 import scala.util.control.NonFatal

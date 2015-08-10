@@ -5,9 +5,9 @@ import javax.inject.Inject
 import model._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import repository.{AlbumGenreRepository, AlbumRepository, ArtistRepository, GenreRepository}
-import slick.dbio.DBIO
 import table.Tables.dbConfig._
 import table.Tables.dbConfig.driver.api._
+import view.AlbumWithArtistAndGenres
 
 import scala.concurrent.Future
 
