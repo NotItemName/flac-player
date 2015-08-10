@@ -9,9 +9,6 @@ import table.Tables.dbConfig.driver.api._
 
 import scala.concurrent.Future
 
-/**
- * @author Mykola Zalyayev
- */
 class ArtistService @Inject()(private val artistRepository: ArtistRepository) {
 
   def delete(id: Int): Future[Int] = db.run {
@@ -25,7 +22,7 @@ class ArtistService @Inject()(private val artistRepository: ArtistRepository) {
   def save(artist: Artist): Future[Artist] = db.run {
     artistRepository.findByName(artist.name).flatMap {
       case None => artistRepository.save(artist)
-      case Some(foundedArtist) => DBIO.successful(foundedArtist)
+      case Some(foundArtist) => DBIO.failed(new Exception("Artist already exists"))
     }.transactionally
   }
 

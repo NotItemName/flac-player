@@ -8,10 +8,9 @@ import play.api.mvc._
 import service.ArtistService
 
 import scala.concurrent.Future
+import scala.util.control.NonFatal
 
-/**
- * @author Mykola Zalyayev
- */
+
 class ArtistController @Inject()(val artistService: ArtistService) extends Controller {
 
   def getAll(from: Int, limit: Int) = Action.async {
@@ -35,6 +34,8 @@ class ArtistController @Inject()(val artistService: ArtistService) extends Contr
     request.body.validate[Artist].map { artist =>
       artistService.save(artist).map { savedArtist =>
         Ok(Json.toJson(savedArtist))
+      }.recover {
+        case NonFatal(ex) => BadRequest(ex.getMessage)
       }
     }.getOrElse(Future.successful(BadRequest("Invalid json")))
   }

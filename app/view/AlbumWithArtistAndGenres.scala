@@ -1,10 +1,10 @@
-package model
+package view
 
 import play.api.libs.json.Json
 
 
 case class AlbumWithArtistAndGenres(id: Option[Int], name: String, year: Int,
-                                    artist: String, genre: Seq[String])
+                                    artist: String, genres: Seq[String])
 
 object AlbumWithArtistAndGenres {
   implicit val jsonFormat = Json.format[AlbumWithArtistAndGenres]

@@ -3,7 +3,7 @@ package model
 import play.api.libs.json.Json
 
 
-case class Genre(id: Option[Int], name: String)
+case class Genre(name: String, id: Option[Int] = None) extends Model
 
 object Genre {
   implicit val jsonFormat = Json.format[Genre]

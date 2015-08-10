@@ -35,7 +35,7 @@ class GenreController @Inject()(val genreService: GenreService) extends Controll
       genreService.save(genre).map { savedGenre =>
         Ok(Json.toJson(savedGenre))
       }.recover {
-        case NonFatal(_) => NotFound("Genre already exists")
+        case NonFatal(ex) => BadRequest(ex.getMessage)
       }
     }.getOrElse(Future.successful(BadRequest("Invalid json")))
   }
