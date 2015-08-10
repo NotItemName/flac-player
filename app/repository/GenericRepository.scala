@@ -6,7 +6,12 @@ import table.Tables.dbConfig.driver.api._
 
 import scala.language.higherKinds
 
-class GenericRepository[M <: Model, B <: BaseTable[M]](table: TableQuery[B]) {
+abstract class GenericRepository[M <: Model, B <: BaseTable[M]](table: TableQuery[B]) {
+
+  /**
+   * @return a copy of model object with given id
+   */
+  def copyWithId(m: M, id: Int): M
 
   def delete(id: Int): DBIO[Int] = table.filter(_.id === id).delete
 
@@ -18,6 +23,12 @@ class GenericRepository[M <: Model, B <: BaseTable[M]](table: TableQuery[B]) {
 
   def insert(model: M): DBIO[Int] = {
     (table returning table.map(_.id)) += model
+  }
+
+  def save(model: M): DBIO[M] = {
+    (table returning table.map(_.id)
+      into ((model, id) => copyWithId(model, id))
+      ) += model
   }
 
 }

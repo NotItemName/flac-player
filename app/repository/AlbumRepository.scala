@@ -7,6 +7,8 @@ import table.Tables.dbConfig.driver.api._
 
 class AlbumRepository extends GenericRepository[Album, AlbumTable](albumTable) {
 
+  override def copyWithId(album: Album, id: Int): Album = album.copy(id = Some(id))
+
   def save(album: Album, genres: Seq[Genre]): DBIO[Album] = {
     (albumTable returning albumTable.map(_.id)
       into ((newAlbum, id) => newAlbum.copy(id = Some(id)))

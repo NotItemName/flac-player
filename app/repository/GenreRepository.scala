@@ -8,6 +8,8 @@ import table.Tables.dbConfig.driver.api._
 
 class GenreRepository extends GenericRepository[Genre, GenreTable](genreTable) {
 
+  override def copyWithId(genre: Genre, id: Int): Genre = genre.copy(id = Some(id))
+
   def saveNotExistedGenres(genres: Seq[String]): DBIO[Seq[Genre]] = {
     DBIO.sequence(genres.map { genreName =>
       findByName(genreName).flatMap {
@@ -18,12 +20,6 @@ class GenreRepository extends GenericRepository[Genre, GenreTable](genreTable) {
   }
 
   def findByName(name: String): DBIO[Option[Genre]] = genreTable.filter(_.name === name).result.headOption
-
-  def save(genre: Genre): DBIO[Genre] = {
-    (genreTable returning genreTable.map(_.id)
-      into ((newGenre, id) => newGenre.copy(id = Some(id)))
-      ) += genre
-  }
 
   def findByAlbumId(id: Int): DBIO[Seq[Genre]] = {
     val query = for {
