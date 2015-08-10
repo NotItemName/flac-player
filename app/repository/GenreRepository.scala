@@ -19,12 +19,6 @@ class GenreRepository extends GenericRepository[Genre, GenreTable](genreTable) {
 
   def findByName(name: String): DBIO[Option[Genre]] = genreTable.filter(_.name === name).result.headOption
 
-  def save(genre: Genre): DBIO[Genre] = {
-    (genreTable returning genreTable.map(_.id)
-      into ((newGenre, id) => newGenre.copy(id = Some(id)))
-      ) += genre
-  }
-
   def findByAlbumId(id: Int): DBIO[Seq[Genre]] = {
     val query = for {
       genre <- genreTable

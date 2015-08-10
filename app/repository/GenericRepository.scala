@@ -4,9 +4,8 @@ import model.Model
 import table.BaseTable
 import table.Tables.dbConfig.driver.api._
 
-import scala.language.higherKinds
 
-class GenericRepository[M <: Model, B <: BaseTable[M]](table: TableQuery[B]) {
+class GenericRepository[M <: Model[M], B <: BaseTable[M]](table: TableQuery[B]) {
 
   def delete(id: Int): DBIO[Int] = table.filter(_.id === id).delete
 
@@ -16,8 +15,10 @@ class GenericRepository[M <: Model, B <: BaseTable[M]](table: TableQuery[B]) {
 
   def findAll(from: Int, limit: Int): DBIO[Seq[M]] = table.drop(from).take(limit).result
 
-  def insert(model: M): DBIO[Int] = {
-    (table returning table.map(_.id)) += model
+  def save(model: M): DBIO[M] = {
+    (table returning table.map(_.id)
+      into ((newModel, id) => newModel.withId(id))
+      ) += model
   }
 
 }

@@ -1,5 +1,7 @@
 package model
 
-trait Model {
+trait Model[M <: Model[M]] {
   def id: Option[Int]
+
+  def withId(id: Int): M
 }
