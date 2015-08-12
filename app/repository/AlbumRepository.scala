@@ -13,18 +13,10 @@ class AlbumRepository extends GenericRepository[Album, AlbumTable](albumTable) {
       ) += album
   }
 
-  def existsAlbumWithArtist(albumName: String, artistName: String): DBIO[Boolean] = {
-    (for {
-      album <- albumTable if album.name === albumName
-      artist <- album.artist if artist.name === artistName
-    } yield album).exists.result
-  }
-
-
   def findByIdAlbumWithArtist(id: Int): DBIO[Option[(Album, String)]] = {
     (for {
-      album <- albumTable
-      artist <- album.artist if album.id === id
+      album <- albumTable if album.id === id
+      artist <- album.artist
     } yield (album, artist.name)).result.headOption
   }
 

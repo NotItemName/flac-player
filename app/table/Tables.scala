@@ -14,6 +14,7 @@ object Tables {
   lazy val songTable = TableQuery[SongTable]
   lazy val artistTable = TableQuery[ArtistTable]
   lazy val albumGenreTable = TableQuery[AlbumGenreTable]
+  lazy val songGenreTable = TableQuery[SongGenreTable]
 
 }
 

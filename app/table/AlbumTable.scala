@@ -14,5 +14,5 @@ class AlbumTable(tag: Tag) extends BaseTable[Album](tag, "ALBUM") {
   def artistId = column[Int]("artistId")
 
   def artist = foreignKey("artist_album_fk", artistId, artistTable)(_.id)
-
+  def uniqueAlbumArtist = index("album_artist_idx", (name, artistId), unique = true)
 }

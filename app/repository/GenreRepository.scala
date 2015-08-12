@@ -2,7 +2,7 @@ package repository
 
 import model.Genre
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import table.GenreTable
+import table.{BaseTable, GenreTable}
 import table.Tables._
 import table.Tables.dbConfig.driver.api._
 
@@ -23,6 +23,14 @@ class GenreRepository extends GenericRepository[Genre, GenreTable](genreTable) {
     val query = for {
       genre <- genreTable
       albGenreTable <- albumGenreTable if albGenreTable.albumId === id && genre.id === albGenreTable.genreId
+    } yield genre
+    query.result
+  }
+
+  def findBySongId(id: Int): DBIO[Seq[Genre]] = {
+    val query = for {
+      genre <- genreTable
+      songGenre <- songGenreTable if songGenre.songId === id && genre.id === songGenre.genreId
     } yield genre
     query.result
   }
