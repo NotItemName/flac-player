@@ -1,6 +1,6 @@
 package view
 
-import model.Album
+import model.{Genre, Album}
 import play.api.libs.json.Json
 
 
@@ -10,6 +10,8 @@ case class AlbumWithArtistAndGenres(id: Option[Int], name: String, year: Int,
 object AlbumWithArtistAndGenres {
   implicit val jsonFormat = Json.format[AlbumWithArtistAndGenres]
 
-  val transform: ((Album, String, Seq[String])) => AlbumWithArtistAndGenres =
-    (tuple) => AlbumWithArtistAndGenres(tuple._1.id, tuple._1.name, tuple._1.year, tuple._2, tuple._3)
+  def transform(tuple: (Album, String, Seq[String])):AlbumWithArtistAndGenres = {
+    AlbumWithArtistAndGenres(tuple._1.id, tuple._1.name, tuple._1.year, tuple._2, tuple._3)
+  }
+
 }

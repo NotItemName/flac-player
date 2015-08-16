@@ -1,6 +1,6 @@
 package repository
 
-import model.{Album, Genre}
+import model.{Album, Artist, Genre}
 import table.AlbumTable
 import table.Tables._
 import table.Tables.dbConfig.driver.api._
@@ -13,19 +13,21 @@ class AlbumRepository extends GenericRepository[Album, AlbumTable](albumTable) {
       ) += album
   }
 
-  def findByIdAlbumWithArtist(id: Int): DBIO[Option[(Album, String)]] = {
-    (for {
-      album <- albumTable if album.id === id
-      artist <- album.artist
-    } yield (album, artist.name)).result.headOption
+  def findByIdAlbumWithArtist(id: Int): DBIO[Seq[(Album, Artist, Genre)]] = {
+    fetchData(albumTable.filter(_.id === id))
   }
 
+  def findAllAlbumsWithArtistAndGenres(from: Int, limit: Int): DBIO[Seq[(Album, Artist, Genre)]] = {
+    fetchData(albumTable.drop(from).take(limit))
+  }
 
-  def findAllAlbumsWithArtist(from: Int, limit: Int): DBIO[Seq[(Album, String)]] = {
+  private def fetchData(albumQuery: Query[AlbumTable, AlbumTable#TableElementType, Seq]): DBIO[Seq[(Album, Artist, Genre)]] = {
     (for {
-      album <- albumTable
+      album <- albumQuery
       artist <- album.artist
-    } yield (album, artist.name)).result
+      albumGenre <- albumGenreTable if album.id === albumGenre.albumId
+      genre <- genreTable if albumGenre.genreId === genre.id
+    } yield (album, artist, genre)).result
   }
 
 }

@@ -34,34 +34,18 @@ class AlbumService @Inject()(private val albumRepository: AlbumRepository,
   }
 
   def findAll(from: Int, limit: Int): Future[Seq[(Album, String, Seq[String])]] = {
-    findGenresFor(
-      albumRepository.findAllAlbumsWithArtist(from, limit)
-    )
+    groupBy(albumRepository.findAllAlbumsWithArtistAndGenres(from, limit))
   }
 
   def findById(id: Int): Future[Option[(Album, String, Seq[String])]] = {
-    findGenresFor(
-      albumRepository.findByIdAlbumWithArtist(id).map(_.toSeq)
-    ) map (_.headOption)
+    groupBy(albumRepository.findByIdAlbumWithArtist(id)).map(_.headOption)
   }
 
-  private def findGenresFor(albumQuery: DBIO[Seq[(Album, String)]]): Future[Seq[(Album, String, Seq[String])]] = {
-    val query =
-      albumQuery.flatMap {
-        albumsWithArtist =>
-          DBIO.sequence(
-            albumsWithArtist.map {
-              case (album, artist) => findGenresFor(album, artist)
-            }
-          )
-      }
-
-    db.run(query)
-  }
-
-  private def findGenresFor(album: Album, artist: String): DBIO[(Album, String, Seq[String])] = {
-    genreRepository.findByAlbumId(album.id.get).map {
-      genres => (album, artist, genres.map(_.name))
+  private def groupBy(query: DBIO[Seq[(Album, Artist, Genre)]]): Future[Seq[(Album, String, Seq[String])]] = {
+    db.run(query).map { result =>
+      result.groupBy(y => (y._1, y._2)).map {
+        case (((album, artist), tail)) => (album, artist.name, tail.map(_._3.name))
+      }.toSeq
     }
   }
 }

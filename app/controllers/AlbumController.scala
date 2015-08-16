@@ -48,5 +48,4 @@ class AlbumController @Inject()(private val albumService: AlbumService) extends 
     }
   }
 
-
 }

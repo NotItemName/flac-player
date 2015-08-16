@@ -1,5 +1,4 @@
-# Genre schema
-
+# Flac-Player schema
 
 # --- !Ups
 CREATE TABLE `GENRE` (
@@ -72,7 +71,7 @@ CREATE TABLE `ALBUM_GENRE` (
 CREATE TABLE `SONG_GENRE` (
   `songId`  INT NOT NULL,
   `genreId` INT NOT NULL,
-  FOREIGN KEY (genreId)
+  FOREIGN KEY (`genreId`)
   REFERENCES `GENRE` (id)
     ON UPDATE RESTRICT
     ON DELETE CASCADE,
