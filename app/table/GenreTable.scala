@@ -10,4 +10,5 @@ class GenreTable(tag: Tag) extends BaseTable[Genre](tag, "GENRE") {
   override def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def name = column[String]("name")
 
+  def uniqueName = index("genre_uniqueName", name, unique = true)
 }

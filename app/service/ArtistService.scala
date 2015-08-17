@@ -2,10 +2,8 @@ package service
 
 import com.google.inject.Inject
 import model.Artist
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import repository.ArtistRepository
 import table.Tables.dbConfig._
-import table.Tables.dbConfig.driver.api._
 
 import scala.concurrent.Future
 
@@ -20,10 +18,7 @@ class ArtistService @Inject()(private val artistRepository: ArtistRepository) {
   }
 
   def save(artist: Artist): Future[Artist] = db.run {
-    artistRepository.findByName(artist.name).flatMap {
-      case None => artistRepository.save(artist)
-      case Some(foundArtist) => DBIO.failed(new Exception("Artist already exists"))
-    }.transactionally
+    artistRepository.save(artist)
   }
 
   def findAll(from: Int, limit: Int): Future[Seq[Artist]] = db.run {

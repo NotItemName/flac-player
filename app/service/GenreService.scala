@@ -2,14 +2,11 @@ package service
 
 import com.google.inject.Inject
 import model.Genre
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import repository.GenreRepository
-import table.Tables
+import table.Tables.dbConfig._
 
 import scala.concurrent.Future
 
-import Tables.dbConfig._
-import Tables.dbConfig.driver.api._
 class GenreService @Inject()(private val genreRepository: GenreRepository) {
 
   def update(id: Int, genre: Genre): Future[Int] = db.run {
@@ -21,10 +18,7 @@ class GenreService @Inject()(private val genreRepository: GenreRepository) {
   }
 
   def save(genre: Genre): Future[Genre] = db.run {
-    genreRepository.findByName(genre.name).flatMap {
-      case None => genreRepository.save(genre)
-      case Some(foundGenre) => DBIO.failed(new Exception("Genre already exists"))
-    }.transactionally
+    genreRepository.save(genre)
   }
 
   def findAll(from: Int, limit: Int): Future[Seq[Genre]] = db.run {
