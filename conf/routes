@@ -3,29 +3,31 @@
 # ~~~~
 
 # Genre
-GET           /player-server/genre/:id         controllers.GenreController.getById(id: Int)
-GET           /player-server/genre             controllers.GenreController.getAll(from: Int ?= 0, limit: Int ?= 20)
-POST          /player-server/genre             controllers.GenreController.add
-PUT           /player-server/genre/:id         controllers.GenreController.update(id: Int)
-DELETE        /player-server/genre/:id         controllers.GenreController.delete(id: Int)
+GET           /player-server/genre/:id            controllers.GenreController.getById(id: Int)
+GET           /player-server/genre                controllers.GenreController.getAll(from: Int ?= 0, limit: Int ?= 20)
+POST          /player-server/genre                controllers.GenreController.add
+PUT           /player-server/genre/:id            controllers.GenreController.update(id: Int)
+DELETE        /player-server/genre/:id            controllers.GenreController.delete(id: Int)
 
 # Artist
-GET           /player-server/artist/:id        controllers.ArtistController.getById(id:Int)
-GET           /player-server/artist            controllers.ArtistController.getAll(from: Int ?= 0, limit: Int ?= 20)
-POST          /player-server/artist            controllers.ArtistController.add
-PUT           /player-server/artist/:id        controllers.ArtistController.update(id:Int)
-DELETE        /player-server/artist/:id        controllers.ArtistController.delete(id:Int)
+GET           /player-server/artist/:id           controllers.ArtistController.getById(id:Int)
+GET           /player-server/artist               controllers.ArtistController.getAll(from: Int ?= 0, limit: Int ?= 20)
+POST          /player-server/artist               controllers.ArtistController.add
+PUT           /player-server/artist/:id           controllers.ArtistController.update(id:Int)
+DELETE        /player-server/artist/:id           controllers.ArtistController.delete(id:Int)
 
 #Albums
-GET           /player-server/album/:id         controllers.AlbumController.getById(id:Int)
-GET           /player-server/album             controllers.AlbumController.getAll(from: Int ?= 0, limit: Int ?= 20)
-DELETE        /player-server/album/:id         controllers.AlbumController.delete(id:Int)
-POST          /player-server/album             controllers.AlbumController.add
+GET           /player-server/album/:id            controllers.AlbumController.getById(id:Int)
+GET           /player-server/album                controllers.AlbumController.getAll(from: Int ?= 0, limit: Int ?= 20)
+DELETE        /player-server/album/:id            controllers.AlbumController.delete(id:Int)
+POST          /player-server/album                controllers.AlbumController.add
 
 #Songs
-GET           /player-server/song              controllers.SongController.getAll(from: Int ?= 0, limit: Int ?= 20)
-GET           /player-server/song/:id          controllers.SongController.getById(id:Int)
-DELETE        /player-server/song/:id          controllers.SongController.delete(id:Int)
+GET           /player-server/song                 controllers.SongController.getAll(from: Int ?= 0, limit: Int ?= 20)
+POST          /player-server/song                 controllers.SongController.saveSong
+GET           /player-server/song/file/:id        controllers.SongController.downloadSong(id: Int)
+GET           /player-server/song/:id             controllers.SongController.getById(id:Int)
+DELETE        /player-server/song/:id             controllers.SongController.delete(id:Int)
 
 # Map static resources from the /public folder to the /assets URL path
-GET           /assets/*file                    controllers.Assets.versioned(path="/public", file: Asset)
+GET           /assets/*file                       controllers.Assets.versioned(path="/public", file: Asset)

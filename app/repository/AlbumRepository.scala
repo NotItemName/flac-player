@@ -13,21 +13,19 @@ class AlbumRepository extends GenericRepository[Album, AlbumTable](albumTable) {
       ) += album
   }
 
-  def findByIdAlbumWithArtist(id: Int): DBIO[Seq[(Album, Artist, Genre)]] = {
-    fetchData(albumTable.filter(_.id === id))
-  }
-
-  def findAllAlbumsWithArtistAndGenres(from: Int, limit: Int): DBIO[Seq[(Album, Artist, Genre)]] = {
-    fetchData(albumTable.drop(from).take(limit))
-  }
-
-  private def fetchData(albumQuery: Query[AlbumTable, AlbumTable#TableElementType, Seq]): DBIO[Seq[(Album, Artist, Genre)]] = {
+  def findByIdAlbumWithArtist(id: Int): DBIO[Option[(Album, String)]] = {
     (for {
-      album <- albumQuery
+      album <- albumTable if album.id === id
       artist <- album.artist
-      albumGenre <- albumGenreTable if album.id === albumGenre.albumId
-      genre <- genreTable if albumGenre.genreId === genre.id
-    } yield (album, artist, genre)).result
+    } yield (album, artist.name)).result.headOption
+  }
+
+
+  def findAllAlbumsWithArtist(from: Int, limit: Int): DBIO[Seq[(Album, String)]] = {
+    (for {
+      album <- albumTable
+      artist <- album.artist
+    } yield (album, artist.name)).result
   }
 
 }
