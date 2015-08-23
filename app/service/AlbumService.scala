@@ -20,7 +20,7 @@ class AlbumService @Inject()(private val albumRepository: AlbumRepository,
     val query = artistRepository.findByName(albumVal.artist).flatMap {
       case None => DBIO.failed(new Exception(s"Artist with name: '${albumVal.artist}' doesn't exist"))
       case Some(artist) => genreRepository.saveNotExistedGenres(albumVal.genres).flatMap { genres =>
-        albumRepository.save(Album(albumVal.name, albumVal.year, artist.id.get), genres).flatMap { album =>
+        albumRepository.save(Album(albumVal.name, albumVal.year, artist.id.get)).flatMap { album =>
           albumGenreRepository.save(album, genres).map(_ => (album, artist.name, genres.map(_.name)))
         }
       }

@@ -6,7 +6,7 @@ import table.Tables._
 import table.Tables.dbConfig.driver.api._
 
 class SongTable(tag: Tag) extends BaseTable[Song](tag, "SONG") {
-  override def * = (name, trackNumber, fileName, albumId, artistId, id.?) <>((Song.apply _).tupled, Song.unapply)
+  override def * = (name, trackNumber, fileName, artistId, albumId, id.?) <>((Song.apply _).tupled, Song.unapply)
 
   override def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def name = column[String]("name")

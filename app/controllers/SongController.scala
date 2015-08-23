@@ -13,10 +13,12 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
 import service.SongService
+import util.ImplicitsUtils.TryOps
 import view.SongWithAlbumArtistAndGenres
 
+import scala.concurrent.Future
+import scala.util.control.NonFatal
 import scala.util.{Failure, Success, Try}
-import util.ImplicitsUtils.TryOps
 
 class SongController @Inject()(private val songService: SongService,
                                private val configuration: Configuration) extends Controller {
@@ -53,22 +55,25 @@ class SongController @Inject()(private val songService: SongService,
     }
   }
 
-  def saveSong = Action(parse.multipartFormData) { request =>
-    request.body.file("song").map { songFile =>
+  def saveSong = Action.async(parse.multipartFormData) { request =>
+    request.body.file("song").fold(Future.successful(NotFound("Missing file"))) { songFile =>
       import java.io.File
       val file = new File(pathToMusicFolder + UUID.randomUUID().toString + ".flac")
-      songFile.ref.moveTo(file)
-      getMetadata(file).map(metadata => convertFromMetadata(metadata)) match {
-        case Success(song) => Ok(Json.toJson(song))
-        case Failure(_) => BadRequest("Couldn't parse metadata")
+      getMetadata(songFile.ref.file).map(metadata => convertFromMetadata(metadata)) match {
+        case Success(song) =>
+          songService.save(song, file.getName).map { song =>
+            songFile.ref.moveTo(file)
+            Ok(Json.toJson(song))
+          }
+        case Failure(_) => Future.successful(BadRequest("Couldn't parse metadata"))
       }
-    }.getOrElse {
-      NotFound("Missing file")
+    }.recover {
+      case NonFatal(e) => BadRequest(e.getMessage)
     }
   }
 
-  def convertFromMetadata(metadata: Metadata): SongWithAlbumArtistAndGenres = {
-    val title = metadata.get("title2")
+  private def convertFromMetadata(metadata: Metadata): SongWithAlbumArtistAndGenres = {
+    val title = metadata.get("title")
     val trackNumber = metadata.get("xmpDM:trackNumber").toInt
     val genres = metadata.get("xmpDM:genre").split(",").toSeq
     val album = metadata.get("xmpDM:album")
